@@ -82,9 +82,9 @@ def show_instances(rds, instance_name=None):
 
     numinstances = len(instances)
 
-    formatString = "{1}\t{2}"
+    formatString = "{1}:{2}"
     if numinstances > 1:
-        formatString = "{0}\t{1}\t{2}"
+        formatString = "{0}\t{1}:{2}"
 
     for instance in instances:
         host, port = instance.endpoint
