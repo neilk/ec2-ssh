@@ -1,6 +1,6 @@
 """
 RDS-HOST
-=======
+========
 
 A simple command line utility, allowing you to find the hostname associated with
 your Amazon RDS instance name.
