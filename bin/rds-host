@@ -6,125 +6,105 @@ import getopt
 
 from sys import stderr
 
-import boto.ec2
+import boto.rds
 
 
-_ec2 = None
-
-
-def short_usage():
-    print >>stderr, """Usage: ec2-host [-k KEY] [-s SECRET] [-r REGION] [-t TAG] [NAME]
-    ec2-host django8 => ec2-53-19-113-121.compute-1.amazonaws.com
-Try `ec2-ssh --help' for more information."""
-
-
-def full_usage():
-    print >>stderr, """Usage: ec2-host [-k KEY] [-s SECRET] [-r REGION] [-t TAG] [NAME]
+def usage():
+    print >>stderr, """Usage: rds-host [-k KEY] [-s SECRET] [-r REGION] [-t TAG] [-i INSTANCE_ID] [NAME]
 Prints server host name.
 
       --help                 display this help and exit
-  -k, --aws-key KEY          Amazon EC2 Key, defaults to ENV[AWS_ACCESS_KEY_ID]
-  -s, --aws-secret SECRET    Amazon EC2 Secret, defaults to ENV[AWS_SECRET_ACCESS_KEY]
-  -r, --region REGION        Amazon EC2 Region, defaults to us-east-1 or ENV[AWS_EC2_REGION]
+  -k, --aws-key KEY          Amazon rds Key, defaults to ENV[AWS_ACCESS_KEY_ID]
+  -s, --aws-secret SECRET    Amazon rds Secret, defaults to ENV[AWS_SECRET_ACCESS_KEY]
+  -r, --region REGION        Amazon rds Region, defaults to us-east-1 or ENV[AWS_RDS_REGION]
   -t, --tag TAG              Tag name for searching, defaults to 'Name'"""
 
 
-def ec2_active_instances(label_tag, filters):
-    instances = []
-    kwargs = {}
 
-    if filters:
-        kwargs['filters'] = filters
+def get_matching_instances(rds, instance_id):
+    matching_instances = []
 
-    reservations = _ec2.get_all_instances(**kwargs)
-    for reservation in reservations:
-        for instance in reservation.instances:
-            instance_name = instance.tags.get(label_tag)
-            if instance.public_dns_name:
-                pair = (instance_name, instance.public_dns_name)
-                instances.append(pair)
-    return instances
+    dbinstances = rds.get_all_dbinstances()
+
+    if instance_id is None:
+        matching_instances = dbinstances
+    else:
+        for dbinstance in dbinstances:
+            if instance_id == dbinstance.id:
+                matching_instances.append(dbinstance)
+
+    return matching_instances
 
 
-def main(argv):
-    try:
-        opts, args = getopt.getopt(argv, "hLk:s:r:t:",
-                                         ["help", "aws-key=", "aws-secret=", "region=", "tag="])
-    except getopt.GetoptError, err:
-        print >>sys.stderr, err
-        short_usage()
-        sys.exit(2)
+def getOptions(argv):
+    opts, args = getopt.getopt(argv, "hLk:s:r:",
+                                     ["help", "aws-key=", "aws-secret=", "region="])
 
     aws_key = os.environ.get("AWS_ACCESS_KEY_ID")
     aws_secret = os.environ.get("AWS_SECRET_ACCESS_KEY")
-    region = os.environ.get("AWS_EC2_REGION")
-    tag = "Name"
+    region = os.environ.get("AWS_RDS_REGION")
+    want_help = False
 
     for opt, arg in opts:
         if opt in ("-h", "--help"):
-            full_usage()
-            sys.exit()
+            want_help = True;
         elif opt in("-k", "--aws-key"):
             aws_key = arg
         elif opt in("-s", "--aws-secret"):
             aws_secret = arg
         elif opt in ("-r", "--region"):
             region = arg
-        elif opt in ("-t", "--tag"):
-            tag = arg
 
     if not aws_key or not aws_secret:
         if not aws_key:
-            print >>sys.stderr,\
-            "AWS_ACCESS_KEY_ID not set in environment and not",\
-            "specified by --aws-key KEY or -k KEY"
-
+            error_message = "Access key not set in environment or options"
         if not aws_secret:
-            print >>sys.stderr,\
-            "AWS_SECRET_ACCESS_KEY not set in environment and not",\
-            "specified by --aws-secret SECRET or -s SECRET"
+            error_message = "Secret key not set in environment or options"
+        raise Exception("Missing credentials", error_message)
 
-        short_usage()
-        sys.exit(2)
-
-    region = region and boto.ec2.get_region(region,
-                                            aws_access_key_id=aws_key,
-                                            aws_secret_access_key=aws_secret)
-
-    global _ec2
-    _ec2 = boto.ec2.connection.EC2Connection(aws_key, aws_secret, region=region)
-
+    instance_name = None
     argc = len(args)
-
-    filters = {}
     if argc == 1:
-        filters['tag:%s' % tag] = args[0]
+        instance_name = args[0]
     elif argc > 1:
-        print >>stderr, "Warning: more than one name given"
-        sys.exit(1)
-        return
+        raise Exception("More than one name given")
 
-    instances = ec2_active_instances(tag, filters)
+    return aws_key, aws_secret, region, want_help, instance_name
+
+def get_rds_connection(region, aws_key, aws_secret):
+    return boto.rds.connect_to_region(region,
+                                      aws_access_key_id=aws_key,
+                                      aws_secret_access_key=aws_secret)
+
+def show_instances(rds, instance_name=None):
+
+    instances = get_matching_instances(rds, instance_name)
 
     numinstances = len(instances)
 
-    if numinstances == 1:
-        print instances[0][1]  # [1] = dns
+    formatString = "{1}\t{2}"
+    if numinstances > 1:
+        formatString = "{0}\t{1}\t{2}"
 
-        sys.exit(0)
-        return
-    elif numinstances == 0 or numinstances > 1:
-        for pair in sorted(instances, key=lambda p: p[0]):
-            print "%s\t%s" % pair
+    for instance in instances:
+        host, port = instance.endpoint
+        print formatString.format(instance.id, host, port);
 
-        sys.exit(0)
-        return
-    else:
-        print >>stderr, 'Unable to match "%s"' % args[0]
-        short_usage()
-
-        sys.exit(1)
-        return
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    argv = sys.argv[1:]
+    try:
+        aws_key, aws_secret, region, want_help, instance_name = getOptions(sys.argv[1:])
+    except getopt.GetoptError, err:
+        print >>sys.stderr, err
+        usage()
+        sys.exit(2)
+
+    if want_help:
+        usage()
+        sys.exit(0)
+
+    rds = get_rds_connection(region, aws_key, aws_secret)
+    show_instances(rds, instance_name)
+
+
