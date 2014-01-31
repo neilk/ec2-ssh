@@ -5,47 +5,39 @@ RDS-HOST
 A simple command line utility, allowing you to find the hostname associated with
 your Amazon RDS instance name.
 
-Also has a wrapper for PostgreSQL's psql utility. If you are using MySQL or Oracle,
-patches are welcome.
+Also has a simple wrapper for PostgreSQL's psql utility. If you want a similar
+script for MySQL or Oracle, patches are welcome.
 
 A few examples:
 
 ::
-TODO FIXME
-    % ec2-ssh nginx2
-    # equivalent to
-    # ssh ubuntu@ec2-123-45-67-89.compute-1.amazonaws.com
-
-    % ec2-ssh root@appserver
-    % ec2-ssh deploy@nginx2 sudo restart nginx
-
-    # accompanying ec2-host script
-
     # w/o arg: prints all active instances
-    % ec2-host
-    django1 ec2-123-45-67-89.compute-1.amazonaws.com
-    django2 ec2-132-45-67-89.compute-1.amazonaws.com
-    django3 ec2-231-45-67-89.compute-1.amazonaws.com
+    % rds-host
+    mydbinstance    mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
+    myotherdbinstance  myotherdbinstance.d5ulnswdjyf.us-west-2.rds.amazonaws.com:5432
 
     # w/ arg: prints host name of matching instance
-    % ec2-host django2
-    django2 ec2-132-45-67-89.compute-1.amazonaws.com
+    % rds-host mydbinstance
+    mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
+
+    # connect to the instance with psql
+    % rds-psql mydbinstance -U mydbuser mydbname
+    psql>
 
 
 Changelog
 `````````
 
+* 0.1.0 - more or less works
 * 0.0.1 - playing around; forked from ec2-ssh 1.2.1
 """
 
-
-import os
 from setuptools import setup
 
 
 setup(
     name = "rds-host",
-    version = "0.0.1",
+    version = "0.1.0",
     author = "Neil Kandalgaonkar",
     author_email = "neilk@neilk.net",
     description = "Get hostname from Amazon RDS instance name",
@@ -53,7 +45,7 @@ setup(
     license = "MIT",
     url = "https://github.com/Instagram/ec2-ssh",
     keywords = ["amazon", "aws", "ec2", "ami", "ssh", "cloud", "boto", "rds"],
-    install_requires = ['boto>=1.0'],
+    install_requires = ['boto>=2.2'],
     scripts = ["bin/rds-host", "bin/rds-psql"],
     classifiers = [
         "Programming Language :: Python",
