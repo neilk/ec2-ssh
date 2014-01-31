@@ -1,49 +1,31 @@
 #!/bin/bash
 
-# TODO work in progress - doesn't actually work yet
 set -e
 
 usage() {
     cat<<EOF
-Usage: rds-psql [-k KEY] [-s SECRET] [-r REGION] <dbinstance-name>
+Usage: rds-psql <dbinstance-name> [psql options]
 
-Open postgres and connect to an RDS instance named <dbinstance-name>
-For a list of instances, run rds-host without any paramteres
+Open postgres and connect to an RDS instance named <dbinstance-name>.
+The following environment variables must be set:
 
-  -h            display this help and exit
-  -k, KEY       Amazon EC2 Key, defaults to \$AWS_ACCESS_KEY_ID
-  -s, SECRET    Amazon EC2 Secret, defaults to \$AWS_SECRET_ACCESS_KEY
-  -r, REGION    Amazon EC2 Region, defaults to us-east-1
-  -t, TAG       Tag name for searching, defaults to 'Name'
+  AWS_ACCESS_KEY_ID      Amazon EC2 Key
+  AWS_SECRET_ACCESS_KEY  Amazon EC2 Secret
+  AWS_RDS_REGION         Amazon RDS Region
 EOF
 }
 
 # Print usage message and exit if no arguments are given
 test $# -eq 0 && { usage; exit; }
 
-# Process options
-cmd="rds-host"
-while getopts ":hk:s:r:t:" opt; do
-    case $opt in
-        h  ) usage; exit 1;;
-        k  ) cmd="$cmd -k $OPTARG";;
-        s  ) cmd="$cmd -s $OPTARG";;
-        r  ) cmd="$cmd -r $OPTARG";;
-        t  ) cmd="$cmd -t $OPTARG";;
-        \? ) usage; exit 1
-    esac
-done
-shift $((OPTIND - 1))
-
-if [ -z "$inst" ]; then
-  inst="$1"
-fi
+inst="$1"
+shift;
 
 # get host from rds-host command
+cmd="./rds-host"
 hostport=$(eval "$cmd $inst")
-IFS=":"; declare -a hostportparts=($1)
-
+IFS=":"; declare -a hostportparts=($hostport)
 host="${hostportparts[0]}"
 port="${hostportparts[1]}"
 
-test -n "$host" && echo "Connecting to $host:$port." && exec sh -c "psql -h $host -p $port $dbname \"$cmd\""
+test -n "$host" && echo "Connecting to $host:$port." && exec sh -c "psql -h $host -p $port $@"
