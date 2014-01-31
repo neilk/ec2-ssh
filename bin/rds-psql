@@ -22,7 +22,7 @@ inst="$1"
 shift;
 
 # get host from rds-host command
-cmd="./rds-host"
+cmd="rds-host"
 hostport=$(eval "$cmd $inst")
 IFS=":"; declare -a hostportparts=($hostport)
 host="${hostportparts[0]}"
