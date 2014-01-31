@@ -1,14 +1,14 @@
 #!/bin/bash
 
+# TODO work in progress - doesn't actually work yet
 set -e
 
 usage() {
     cat<<EOF
-Usage: ec2-ssh [-k KEY] [-s SECRET] [-r REGION] [-t TAG] <instance-name>
+Usage: rds-psql [-k KEY] [-s SECRET] [-r REGION] <dbinstance-name>
 
-Open an ssh connection to an EC2 instance where <instance-name>=tag:value.
-The 'tag:' portion of <instance-name> is optional, and defaults to 'Name'.
-For a list of instances, run ec2-host without any paramteres
+Open postgres and connect to an RDS instance named <dbinstance-name>
+For a list of instances, run rds-host without any paramteres
 
   -h            display this help and exit
   -k, KEY       Amazon EC2 Key, defaults to \$AWS_ACCESS_KEY_ID
@@ -22,7 +22,7 @@ EOF
 test $# -eq 0 && { usage; exit; }
 
 # Process options
-cmd="ec2-host"
+cmd="rds-host"
 while getopts ":hk:s:r:t:" opt; do
     case $opt in
         h  ) usage; exit 1;;
@@ -35,36 +35,15 @@ while getopts ":hk:s:r:t:" opt; do
 done
 shift $((OPTIND - 1))
 
-# support user@instance-name format
-IFS="@"; declare -a hostparts=($1)
-
-inst="${hostparts[1]}"
-user="${hostparts[0]}"
-
 if [ -z "$inst" ]; then
   inst="$1"
-  user="ubuntu"
 fi
 
-# support tag:value format for identifying instances
-IFS=":"; declare -a tagparts=($inst)
+# get host from rds-host command
+hostport=$(eval "$cmd $inst")
+IFS=":"; declare -a hostportparts=($1)
 
-tag="${tagparts[0]}"
-value="${tagparts[1]}"
+host="${hostportparts[0]}"
+port="${hostportparts[1]}"
 
-if [ -z "$value" ]; then
-    value="$inst"
-else
-    cmd="$cmd -t $tag"
-fi
-
-# get host from ec2-host command
-host=$(eval "$cmd $inst")
-
-# pass all other parameters (${@:2}) to ssh allowing
-# things like: ec2-ssh nginx uptime
-cmd="echo \\\". ~/.bashrc && PS1='\[\e]0;$inst: \w\\\a\]\[\\\033[01;32m\]$inst\[\\\033[00m\]:\[\\\033[01;34m\]\w\[\\\033[00m\]\\\$ '\\\" > ~/.ec2sshrc; /bin/bash --rcfile .ec2sshrc -i"
-if test "${@:2}"; then
-    cmd="${@:2}"
-fi
-test -n "$host" && echo "Connecting to $host." && exec sh -c "ssh -t $user@$host \"$cmd\""
+test -n "$host" && echo "Connecting to $host:$port." && exec sh -c "psql -h $host -p $port $dbname \"$cmd\""
