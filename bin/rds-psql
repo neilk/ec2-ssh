@@ -27,5 +27,6 @@ hostport=$(eval "$cmd $inst")
 IFS=":"; declare -a hostportparts=($hostport)
 host="${hostportparts[0]}"
 port="${hostportparts[1]}"
-
-test -n "$host" && echo "Connecting to $host:$port." && exec sh -c "psql -h $host -p $port $@"
+psql_cmd="psql -h $host -p $port $@"
+echo $psql_cmd
+test -n "$host" && echo "Connecting to $host:$port." && exec sh -c $psql_cmd
