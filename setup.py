@@ -1,48 +1,7 @@
-"""
-RDS-HOST
-========
-
-A simple command line utility, allowing you to find the hostname associated with
-your Amazon RDS instance name.
-
-Also has a simple wrapper for PostgreSQL's psql utility. If you want a similar
-script for MySQL or Oracle, patches are welcome.
-
-A few examples:
-
-::
-    # w/o arg: prints all active instances
-    % rds-host
-    mydbinstance    mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
-    myotherdbinstance  myotherdbinstance.d5ulnswdjyf.us-west-2.rds.amazonaws.com:5432
-
-    # w/ arg: prints host name of matching instance
-    % rds-host mydbinstance
-    mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
-
-    # connect to the instance with psql
-    % rds-psql mydbinstance -U mydbuser mydbname
-    Connecting to mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com...
-    Password for user mydbuser:
-    psql (9.0.5, server 9.3.1)
-    WARNING: psql version 9.0, server version 9.3.
-    Some psql features might not work.
-    SSL connection (cipher: DHE-RSA-AES256-SHA, bits: 256)
-    Type "help" for help.
-
-    mydbname=>
-
-
-Changelog
-`````````
-
-* 0.1.2 - trying to get the package to work
-* 0.1.0 - more or less works
-* 0.0.1 - playing around; forked from ec2-ssh 1.2.1
-"""
-
 from setuptools import setup
 
+with open('README.rst', 'r') as readme_file:
+    readme = readme_file.read();
 
 setup(
     name = "rds-host",
@@ -50,7 +9,7 @@ setup(
     author = "Neil Kandalgaonkar",
     author_email = "neilk@neilk.net",
     description = "Get hostname from Amazon RDS instance name",
-    long_description = __doc__,
+    long_description = readme,
     license = "MIT",
     url = "https://github.com/neilk/rds-host",
     download_url="https://github.com/neilk/rds-host/archive/v0.1.2.tar.gz",
