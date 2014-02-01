@@ -7,9 +7,8 @@ your Amazon RDS instance name.
 Also has a simple wrapper for PostgreSQL's psql utility. If you want a similar
 script for MySQL or Oracle, patches are welcome.
 
-A few examples:
+A few examples::
 
-::
     # w/o arg: prints all active instances
     % rds-host
     mydbinstance    mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
