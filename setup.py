@@ -52,6 +52,7 @@ setup(
     long_description = __doc__,
     license = "MIT",
     url = "https://github.com/neilk/rds-host",
+    download_url="https://github.com/neilk/rds-host/archive/v0.1.0.tar.gz",
     keywords = ["amazon", "aws", "psql", "cloud", "boto", "rds"],
     install_requires = ['boto>=2.2'],
     scripts = ["bin/rds-host", "bin/rds-psql"],
