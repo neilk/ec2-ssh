@@ -1,4 +1,4 @@
-README
+README.rst
 setup.py
 bin/rds-host
 bin/rds-psql

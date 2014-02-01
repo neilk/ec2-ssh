@@ -7,8 +7,7 @@ Author: Neil Kandalgaonkar
 Author-email: neilk@neilk.net
 License: MIT
 Download-URL: https://github.com/neilk/rds-host/archive/v0.1.2.tar.gz
-Description: 
-        RDS-HOST
+Description: RDS-HOST
         ========
         
         A simple command line utility, allowing you to find the hostname associated with
@@ -17,9 +16,8 @@ Description:
         Also has a simple wrapper for PostgreSQL's psql utility. If you want a similar
         script for MySQL or Oracle, patches are welcome.
         
-        A few examples:
+        A few examples::
         
-        ::
             # w/o arg: prints all active instances
             % rds-host
             mydbinstance    mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
@@ -42,12 +40,7 @@ Description:
             mydbname=>
         
         
-        Changelog
-        `````````
         
-        * 0.1.2 - trying to get the package to work
-        * 0.1.0 - more or less works
-        * 0.0.1 - playing around; forked from ec2-ssh 1.2.1
         
 Keywords: amazon,aws,psql,cloud,boto,rds
 Platform: UNKNOWN
