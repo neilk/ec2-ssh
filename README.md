@@ -21,7 +21,15 @@ A few examples:
 
     # connect to the instance with psql
     % rds-psql mydbinstance -U mydbuser mydbname
-    psql>
+    Connecting to mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com...
+    Password for user mydbuser:
+    psql (9.0.5, server 9.3.1)
+    WARNING: psql version 9.0, server version 9.3.
+    Some psql features might not work.
+    SSL connection (cipher: DHE-RSA-AES256-SHA, bits: 256)
+    Type "help" for help.
+
+    mydbname=>
 
 
 
