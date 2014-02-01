@@ -46,7 +46,7 @@ from setuptools import setup
 
 setup(
     name = "rds-host",
-    version = "0.1.0",
+    version = "0.1.2",
     author = "Neil Kandalgaonkar",
     author_email = "neilk@neilk.net",
     description = "Get hostname from Amazon RDS instance name",
