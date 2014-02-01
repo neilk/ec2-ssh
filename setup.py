@@ -36,6 +36,7 @@ A few examples:
 Changelog
 `````````
 
+* 0.1.2 - trying to get the package to work
 * 0.1.0 - more or less works
 * 0.0.1 - playing around; forked from ec2-ssh 1.2.1
 """
@@ -52,7 +53,7 @@ setup(
     long_description = __doc__,
     license = "MIT",
     url = "https://github.com/neilk/rds-host",
-    download_url="https://github.com/neilk/rds-host/archive/v0.1.0.tar.gz",
+    download_url="https://github.com/neilk/rds-host/archive/v0.1.2.tar.gz",
     keywords = ["amazon", "aws", "psql", "cloud", "boto", "rds"],
     install_requires = ['boto>=2.2'],
     scripts = ["bin/rds-host", "bin/rds-psql"],
