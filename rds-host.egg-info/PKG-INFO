@@ -1,65 +1,51 @@
 Metadata-Version: 1.0
-Name: ec2-ssh
-Version: 1.2.1
-Summary: SSH into EC2 instances via tag name
+Name: rds-host
+Version: 0.1.0
+Summary: Get hostname from Amazon RDS instance name
 Home-page: https://github.com/Instagram/ec2-ssh
-Author: Shayne Sweeney
-Author-email: shayne@instagram.com
+Author: Neil Kandalgaonkar
+Author-email: neilk@neilk.net
 License: MIT
 Description: 
-        EC2-SSH
-        =======
+        RDS-HOST
+        ========
         
-        A simple command line utility, allowing you to SSH into you Amazon EC2 instances
-        by their "Name" tag.
+        A simple command line utility, allowing you to find the hostname associated with
+        your Amazon RDS instance name.
+        
+        Also has a simple wrapper for PostgreSQL's psql utility. If you want a similar
+        script for MySQL or Oracle, patches are welcome.
         
         A few examples:
         
         ::
-        
-            % ec2-ssh nginx2
-            # equivalent to
-            # ssh ubuntu@ec2-123-45-67-89.compute-1.amazonaws.com
-        
-            % ec2-ssh root@appserver
-            % ec2-ssh deploy@nginx2 sudo restart nginx
-        
-            # accompanying ec2-host script
-        
             # w/o arg: prints all active instances
-            % ec2-host
-            django1 ec2-123-45-67-89.compute-1.amazonaws.com
-            django2 ec2-132-45-67-89.compute-1.amazonaws.com
-            django3 ec2-231-45-67-89.compute-1.amazonaws.com
+            % rds-host
+            mydbinstance    mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
+            myotherdbinstance  myotherdbinstance.d5ulnswdjyf.us-west-2.rds.amazonaws.com:5432
         
             # w/ arg: prints host name of matching instance
-            % ec2-host django2
-            django2 ec2-132-45-67-89.compute-1.amazonaws.com
+            % rds-host mydbinstance
+            mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com:5432
         
+            # connect to the instance with psql
+            % rds-psql mydbinstance -U mydbuser mydbname
+            psql>
         
-        Links
-        `````
-        
-        * `Website <http://github.com/Instagram/ec2-ssh>`_
-        * `Instagram <http://instagram.com>`_
         
         Changelog
         `````````
         
-        * 1.0 - initial release
-        * 1.1 - override prompt (PS1) to show tag name
-        * 1.1.1 - Add line echoing host before establishing SSH connection
-        * 1.2 - Merged pull requests to add region and tag support
-        * 1.2.1 - Fix issue when ec2-host finds one offline instance with same name as an online instance
+        * 0.1.0 - more or less works
+        * 0.0.1 - playing around; forked from ec2-ssh 1.2.1
         
-Keywords: amazon,aws,ec2,ami,ssh,cloud,boto
+Keywords: amazon,aws,ec2,ami,ssh,cloud,boto,rds
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
 Classifier: Natural Language :: English
 Classifier: Environment :: Console
-Classifier: Environment :: Web Environment
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
