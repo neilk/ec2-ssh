@@ -2,10 +2,11 @@ Metadata-Version: 1.0
 Name: rds-host
 Version: 0.1.0
 Summary: Get hostname from Amazon RDS instance name
-Home-page: https://github.com/Instagram/ec2-ssh
+Home-page: https://github.com/neilk/rds-host
 Author: Neil Kandalgaonkar
 Author-email: neilk@neilk.net
 License: MIT
+Download-URL: https://github.com/neilk/rds-host/archive/v0.1.0.tar.gz
 Description: 
         RDS-HOST
         ========
@@ -30,7 +31,15 @@ Description:
         
             # connect to the instance with psql
             % rds-psql mydbinstance -U mydbuser mydbname
-            psql>
+            Connecting to mydbinstance.c6ulnjwxjm.us-west-2.rds.amazonaws.com...
+            Password for user mydbuser:
+            psql (9.0.5, server 9.3.1)
+            WARNING: psql version 9.0, server version 9.3.
+            Some psql features might not work.
+            SSL connection (cipher: DHE-RSA-AES256-SHA, bits: 256)
+            Type "help" for help.
+        
+            mydbname=>
         
         
         Changelog
@@ -39,10 +48,10 @@ Description:
         * 0.1.0 - more or less works
         * 0.0.1 - playing around; forked from ec2-ssh 1.2.1
         
-Keywords: amazon,aws,ec2,ami,ssh,cloud,boto,rds
+Keywords: amazon,aws,psql,cloud,boto,rds
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
-Classifier: Development Status :: 5 - Production/Stable
+Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Developers
 Classifier: Natural Language :: English
 Classifier: Environment :: Console
