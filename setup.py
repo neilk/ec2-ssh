@@ -17,16 +17,16 @@ setup(
     install_requires = ['boto>=2.2'],
     scripts = ["bin/rds-host", "bin/rds-psql"],
     classifiers = [
-        "Programming Language :: Python",
         "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "Natural Language :: English",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
         "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Topic :: Database",
+        "Topic :: Internet",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "Topic :: Internet :: WWW/HTTP",
         "Topic :: Utilities"
         ],
 )
