@@ -1,8 +1,9 @@
+README
 setup.py
 bin/rds-host
 bin/rds-psql
-rds-host.egg-info/PKG-INFO
-rds-host.egg-info/SOURCES.txt
-rds-host.egg-info/dependency_links.txt
-rds-host.egg-info/requires.txt
-rds-host.egg-info/top_level.txt
+rds_host.egg-info/PKG-INFO
+rds_host.egg-info/SOURCES.txt
+rds_host.egg-info/dependency_links.txt
+rds_host.egg-info/requires.txt
+rds_host.egg-info/top_level.txt

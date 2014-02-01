@@ -1,6 +1,6 @@
 Metadata-Version: 1.0
 Name: rds-host
-Version: 0.1.0
+Version: 0.1.2
 Summary: Get hostname from Amazon RDS instance name
 Home-page: https://github.com/neilk/rds-host
 Author: Neil Kandalgaonkar
